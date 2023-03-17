@@ -1,11 +1,19 @@
-import './App.css';
+import Landing from './components/Landing';
+import Home from './components/Home';
 
-function App() {
+import { Route } from 'react-router-dom';
+import './App.css';
+const App = () => {
   return (
-    <div className="App">
-      <h1>Henry Food</h1>
-    </div>
+     <div>
+          <Route exact path="/">
+            <Landing />
+          </Route>
+          <Route exact path='/home'>
+            <Home />
+          </Route>
+     </div>
   );
-}
+ };
 
 export default App;
