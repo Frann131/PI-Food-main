@@ -1,18 +1,27 @@
 import React from "react";
 import styles from '../cssModuleStyles/header.module.css'
 import SearchBar from "./SearchBar";
-
+import { Link } from "react-router-dom";
 export default function Header(props) {
     return (
         <div className={styles.header}>
-            <div className={styles.headTitle}>
-                Healthy Food
-            </div>
+            <Link to='/home' style={{textDecoration: 'none'}}>
+                <div className={styles.headTitle}>
+                    Healthy Food
+                </div>
+            </Link>
             <div>
                 <SearchBar />
             </div>
             <div>
-                <button className={styles.addBtn}> Add recipe</button>
+                <Link to='/recipes/new'>
+                    <button className={styles.addBtn}> Add recipe</button>
+                </Link>
+            </div>
+            <div>
+                <Link to='/home'>
+                    <button className={styles.addBtn}>Home</button>
+                </Link>
             </div>
         </div>
     )

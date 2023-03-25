@@ -1,0 +1,47 @@
+.cirContainer {
+  display: flex;
+  justify-content: center; }
+
+.circular {
+  width: 100px;
+  height: 100px;
+  border-radius: 50%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background: var(--healthScore-color); }
+  .circular .score {
+    font-weight: 600;
+    font-size: 24pt;
+    color: white;
+    text-shadow: 1px 0px 11px rgba(0, 0, 0, 0.7);
+    background-color: none; }
+
+.container {
+  background-color: #e6e6e6;
+  font-family: 'Poppins', sans-serif; }
+
+h2 {
+  text-align: center; }
+
+.recipeDetail {
+  width: 45em;
+  margin: 0 auto;
+  background-color: white;
+  box-shadow: -1px 9px 11px 1px rgba(102, 102, 102, 0.49);
+  padding: 1.5em; }
+
+.healthScoreText {
+  font-size: 24px;
+  font-weight: bold;
+  color: #73C373; }
+
+.image {
+  max-width: 750px;
+  display: flex;
+  justify-content: center;
+  margin-bottom: 20px; }
+
+.image img {
+  border-radius: 10px;
+  box-shadow: 0px 9px 11px 1px rgba(102, 102, 102, 0.49); }

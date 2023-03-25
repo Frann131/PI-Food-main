@@ -1,0 +1,77 @@
+.cirContainer {
+  display: flex;
+  justify-content: center; }
+
+.circular {
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background: var(--healthScore-color); }
+  .circular .score {
+    font-weight: 600;
+    font-size: 14pt;
+    color: white;
+    text-shadow: 1px 0px 11px rgba(0, 0, 0, 0.7);
+    background-color: none; }
+
+h2 {
+  text-align: center; }
+
+.card {
+  width: 220px;
+  display: flex;
+  flex-direction: column;
+  flex-wrap: nowrap;
+  justify-content: space-around;
+  align-items: center;
+  align-content: stretch;
+  border-radius: 20px;
+  box-shadow: 0 0 10px 2px rgba(77, 122, 22, 0.52);
+  margin: 10px 10px 10px 25px;
+  background-color: #a9d675;
+  font-family: 'Poppins', sans-serif;
+  padding-bottom: 10px;
+  padding-top: 10px;
+  min-height: 350px; }
+
+.image {
+  max-height: 220px;
+  height: auto; }
+
+.image img {
+  max-width: 200px;
+  height: auto;
+  border-radius: 5px; }
+
+.title {
+  margin: 0;
+  font-size: 14px;
+  text-align: center;
+  margin: 10px;
+  font-weight: 600; }
+
+.diets {
+  margin: 5px;
+  font-size: small;
+  padding-bottom: 5px;
+  text-align: center; }
+
+.detail {
+  background-color: #009600;
+  color: #fff;
+  border: 1px solid #009600;
+  border-radius: 15px;
+  font-size: 12px;
+  padding: 5px 10px 5px 10px;
+  cursor: pointer;
+  width: auto;
+  height: auto;
+  margin-bottom: 0px;
+  font-family: 'Poppins', sans-serif; }
+
+.detail:hover {
+  background-color: #5baf5b;
+  border: 1px solid #5baf5b; }
