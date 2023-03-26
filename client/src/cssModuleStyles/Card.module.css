@@ -14,7 +14,7 @@
     font-weight: 600;
     font-size: 14pt;
     color: white;
-    text-shadow: 1px 0px 11px rgba(0, 0, 0, 0.7);
+    text-shadow: 0px 0px 11px rgba(0, 0, 0, 0.7);
     background-color: none; }
 
 h2 {
@@ -35,7 +35,11 @@ h2 {
   font-family: 'Poppins', sans-serif;
   padding-bottom: 10px;
   padding-top: 10px;
-  min-height: 350px; }
+  min-height: 400px;
+  transition: background-color 0.15s ease-in-out; }
+
+.card:hover {
+  background-color: #84c43b; }
 
 .image {
   max-height: 220px;

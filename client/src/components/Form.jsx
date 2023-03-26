@@ -6,8 +6,8 @@ import styles from '../cssModuleStyles/form.module.css'
 const Form = () => {
     const dispatch = useDispatch();
     const diets = useSelector(state => state.diets);
-    console.log('diets:', diets)
-
+    const [disableSubmit, setDisableSubmit] = useState(true);
+    const [disableAddStep, setDisableAddStep] = useState(true)
     const [formData, setFormData] = useState({
         name: '',
         image: '',
@@ -35,22 +35,79 @@ const Form = () => {
             [e.target.name]: e.target.value,
         });
     };
-
-    const handleStepsChange = (e, index) => {
-        const newSteps = [...formData.steps];
-        if (newSteps.length === 0 && index === 0) {
-            newSteps.push({ number: 1, step: '' });
+    const handleRecipeNameChange = (event) => {
+        const value = event.target.value;
+        const valueLength = value.trim().length
+        if (valueLength > 10 && valueLength < 100) {
+            setDisableSubmit(false)
+            event.target.style.backgroundColor = '#fff'
+        } else {
+            event.target.style.backgroundColor = '#fcc'
+            setDisableSubmit(true)
         }
-        newSteps[index] = { ...newSteps[index], step: e.target.value };
-        setFormData({
-            ...formData,
-            steps: newSteps.map((step, i) => ({ ...step, number: i + 1 })),
-        });
     };
 
 
 
+    const handleImageChange = (event) => {
+        const value = event.target.value;
+        const isValidImage = /\.(gif|jpe?g|png)$/i.test(value);
+        const isHttps = value.startsWith('https://')
+        const isHttp = value.startsWith('http://')
+        if (!isValidImage || (!isHttps && !isHttp)) {
+            event.target.style.backgroundColor = '#fcc'
+            setDisableSubmit(true)
+        } else {
+            event.target.style.backgroundColor = '#fff'
+            setDisableSubmit(false)
+        }
+    };
 
+    const handleSummaryChange = (event) => {
+        const value = event.target.value;
+        const valueLength = value.trim().length;
+        if (valueLength > 50 && valueLength < 1200) {
+            setDisableSubmit(false)
+            event.target.style.backgroundColor = '#fff'
+        } else {
+            setDisableSubmit(true);
+            event.target.style.backgroundColor = '#fcc'
+        }
+    };
+    
+    const handleHealthScoreChange = (event) => {
+        const value = event.target.value;
+        if (value >= 0 && value < 100) {
+            setDisableSubmit(false)
+            event.target.style.backgroundColor = '#fff'
+        } else {
+            setDisableSubmit(true)
+            event.target.style.backgroundColor = '#fcc'
+        }
+    };
+    
+    const handleStepsChange = (e, index) => {
+        const newSteps = [...formData.steps];
+        const stepValue = e.target.value.trim();
+        const stepLength = stepValue.length;
+
+        if (stepLength > 0 && stepLength < 400 && e.target.value!=='') {
+            setDisableSubmit(false)
+            setDisableAddStep(false)
+            e.target.style.backgroundColor = '#fff'
+            newSteps[index] = { ...newSteps[index], step: stepValue };
+            setFormData({
+                ...formData,
+                steps: newSteps.map((step, i) => ({ ...step, number: i + 1 })),
+            });
+
+        } else {
+            setDisableSubmit(true)
+            setDisableAddStep(true)
+            e.target.style.backgroundColor = '#fcc'
+        }
+    };
+    
 
     const handleDietsChange = (e) => {
         const dietId = Number(e.target.value);
@@ -67,6 +124,22 @@ const Form = () => {
         });
     };
 
+    const handleCombinedHealthScoreChange = (event) => {
+        handleHealthScoreChange(event);
+        handleInputChange(event);
+    }
+    const handleCombinedImageChange = (event) => {
+        handleImageChange(event)
+        handleInputChange(event)
+    }
+    const handleCombinedNameChange = (event) => {
+        handleRecipeNameChange(event);
+        handleInputChange(event)
+    }
+    const handleCombinedSummaryChange = (event) => {
+        handleSummaryChange(event);
+        handleInputChange(event)
+    }
     const handleSubmit = (e) => {
         e.preventDefault();
         dispatch(postRecipe(formData));
@@ -83,61 +156,68 @@ const Form = () => {
     return (
         <form className={styles.form} onSubmit={handleSubmit}>
             <div className={styles.campo}>
-                <label htmlFor="name" className={styles.label}>Nombre</label>
+                <label htmlFor="name" className={styles.label}>Recipe name</label>
                 <input
                     type="text"
                     id="name"
                     name="name"
                     value={formData.name}
-                    onChange={handleInputChange}
+                    onChange={handleCombinedNameChange}
                     className={styles.input}
+                    placeholder='Example: Full Vegan Burger'
                 />
             </div>
             <div className={styles.campo}>
-                <label htmlFor="image" className={styles.label}>Imagen</label>
+                <label htmlFor="image" className={styles.label}>Image (URL)</label>
                 <input
                     type="text"
                     id="image"
                     name="image"
                     value={formData.image}
-                    onChange={handleInputChange}
+                    onChange={handleCombinedImageChange}
                     className={styles.input}
+                    placeholder='Example: https://www.foodimages-example.com/image/vegan_burger.jpg'
                 />
             </div>
             <div className={styles.campo}>
-                <label htmlFor="resume" className={styles.label}>Resumen</label>
+                <label htmlFor="resume" className={styles.label}>Summary</label>
                 <textarea
                     id="resume"
                     name="resume"
                     rows={3}
                     value={formData.resume}
-                    onChange={handleInputChange}
+                    onChange={handleCombinedSummaryChange}
                     className={styles.textarea}
+                    placeholder='Enter recipe summary'
                 />
             </div>
             <div className={styles.campo}>
-                <label htmlFor="healthScore" className={styles.label}>Calificación de salud</label>
+                <label htmlFor="healthScore" className={styles.label}>Health Score</label>
                 <input
                     type="number"
                     id="healthScore"
                     name="healthScore"
                     value={formData.healthScore}
-                    onChange={handleInputChange}
+                    onChange={handleCombinedHealthScoreChange}
                     className={styles.input}
+                    placeholder='It has to be a value between 0 and 100'
                 />
             </div>
-            <div className={styles.campo}>
-                <label htmlFor="steps">Pasos</label>
+            <div className={styles.campoSteps}>
+                <label className={styles.label} htmlFor="steps">Steps</label>
                 <div>
                     <input
                         type="number"
                         value={formData.steps.length > 0 ? formData.steps[0].number : ''}
                         readOnly
+                        className={styles.stepNumber}
+                        style={{ appearance: 'none' }}
                     />
                     <input
                         type="text"
                         value={formData.steps.length > 0 ? formData.steps[0].step : ''}
                         onChange={(e) => handleStepsChange(e, 0)}
+                        className={styles.stepInput}
                     />
                 </div>
                 {formData.steps.slice(1).map((step, index) => (
@@ -146,24 +226,27 @@ const Form = () => {
                             type="number"
                             value={step.number}
                             readOnly
+                            className={styles.stepNumber}
+                            style={{ appearance: 'none' }}
                         />
                         <input
                             type="text"
                             value={step.step}
                             onChange={(e) => handleStepsChange(e, index + 1)}
+                            className={styles.stepInput}
                         />
                     </div>
                 ))}
-                <button type="button" onClick={() => setFormData({ ...formData, steps: [...formData.steps, { number: formData.steps.length + 1, step: ' ' }] })}>
-                    Agregar paso
+                <button disabled={disableAddStep} className={styles.button} type="button" onClick={() => setFormData({ ...formData, steps: [...formData.steps, { number: formData.steps.length + 1, step: ' ' }] })}>
+                    Add step
                 </button>
             </div>
 
 
             <div className={styles.campo}>
-                <label>Dieta</label>
+                <label>Diets</label>
                 {diets.map((diet) => (
-                    <label key={diet.id}>
+                    <label key={diet.id} className={styles.dietItem}>
                         <input
                             type="checkbox"
                             value={diet.id}
@@ -175,7 +258,7 @@ const Form = () => {
                 ))}
             </div>
 
-            <button type="submit">Agregar Receta</button>
+            <button className={styles.button} type="submit" disabled={disableSubmit}>Agregar Receta</button>
         </form>
 
 

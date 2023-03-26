@@ -16,8 +16,8 @@ export default function Card(props) {
                     <img src={props.image} alt="" />
                 </div>
                 <div className={styles.diets}>
-                    <b>{'Dietas: '}</b>
-                    {capitalDiets.join(', ') + '.'}
+                    <b>{'Diets: '}</b>
+                    {capitalDiets.length === 0 ? 'None' : capitalDiets.join(', ') + '.'}
                 </div>
                 <div className={styles.cirContainer}>
                     <div className={styles.circular} style={{ '--healthScore-color': healthScoreColor }}>

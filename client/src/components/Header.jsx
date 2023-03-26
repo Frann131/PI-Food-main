@@ -5,7 +5,7 @@ import { Link } from "react-router-dom";
 export default function Header(props) {
     return (
         <div className={styles.header}>
-            <Link to='/home' style={{textDecoration: 'none'}}>
+            <Link to='/' style={{textDecoration: 'none'}}>
                 <div className={styles.headTitle}>
                     Healthy Food
                 </div>

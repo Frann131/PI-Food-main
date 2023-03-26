@@ -4,9 +4,6 @@ const GET_RECIPES = 'GET_RECIPES'
 const GET_BY_ID = 'GET_BY_ID'
 const GET_DIETS = 'GET_DIETS'
 const POST_RECIPE = 'POST_RECIPE'
-const ORDER_BY_NAME = 'ORDER_BY_NAME'
-const ORDER_BY_HS = 'ORDER_BY_HS'
-const FILTER_BY_DIETS = 'FILTER_BY_DIET'
 const CLEAR_RECIPES = 'CLEAR_RECIPES'
 
 export function getRecipes(name) {
@@ -54,25 +51,6 @@ export function postRecipe(payload) {
             payload: response.data
         });
         return response;
-    }
-}
-export function orderByName(payload) {
-    return {
-        type: ORDER_BY_NAME,
-        payload: payload
-    }
-}
-export function orderByHs(payload) {
-    return {
-        type: ORDER_BY_HS,
-        payload: payload
-    }
-}
-
-export function filterByDiets(payload) {
-    return {
-        type: FILTER_BY_DIETS,
-        payload: payload
     }
 }
 

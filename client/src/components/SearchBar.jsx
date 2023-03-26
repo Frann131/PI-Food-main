@@ -15,7 +15,12 @@ export default function SearchBar(props) {
     const handleInputChange = (event) => {
         setSearchValue(event.target.value);
     }
-
+    
+    const handleKeyDown = (event) => {
+        if (event.key === 'Enter') {
+            handleSearch();
+        }
+    }
     return (
         <div className={styles.searchBar}>
             <input
@@ -26,6 +31,7 @@ export default function SearchBar(props) {
                 placeholder=""
                 value={searchValue}
                 onChange={handleInputChange}
+                onKeyDown={handleKeyDown}
             />
             <button className={styles.searchBttn} onClick={handleSearch}>
                 <img className={styles.lupa} src={lupa} alt='' />

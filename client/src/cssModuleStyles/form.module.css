@@ -8,9 +8,16 @@
         box-shadow: 0 0.5rem 1rem rgba(0 0 0 0.2);
         max-width: 40rem;
         margin: 0 auto;
+        font-family: 'Poppins' sans-serif;
     }
 
     .campo {
+        display: flex;
+        flex-direction: column;
+        margin-bottom: 1rem;
+        width: 100%;
+    }
+    .campoSteps {
         display: flex;
         flex-direction: column;
         margin-bottom: 1rem;
@@ -23,6 +30,7 @@
         text-transform: uppercase;
         font-size: 0.8rem;
         color: #333;
+        font-family: 'Poppins', sans-serif;
     }
 
     .input {
@@ -32,6 +40,7 @@
         width: 100%;
         font-size: 1rem;
         margin-bottom: 1rem;
+        font-family: 'Poppins', sans-serif;
     }
 
     .textarea {
@@ -40,6 +49,7 @@
         width: 100%;
         font-size: 1rem;
         margin-bottom: 1rem;
+        font-family: 'Poppins', sans-serif;
     }
 
     .button {
@@ -50,21 +60,37 @@
         border-radius: 0.5rem;
         font-size: 1rem;
         cursor: pointer;
+        font-family: 'Poppins', sans-serif;
+    }
+    .button:disabled {
+        background-color: #777;
+        cursor: not-allowed;
     }
 
-    .form__campo--steps {
-        display: flex;
-        flex-direction: column;
+
+    .stepInput {
+        padding: 0.5rem;
+        border: none;
+        border-bottom: 2px solid #ccc;
+        width: 90%;
+        font-size: 1rem;
         margin-bottom: 1rem;
     }
+    .stepNumber {
+        width: calc(5% - 1px);
+        padding: 0;
+        margin-right: 5px;
+        text-align: center;
+        align-items: center;
+        align-content: center;
+        font-family: 'Poppins', sans-serif;
+        font-size: 1rem;
+        border: 2px solid #555;
+        border-radius: 30%;
+        color: #555;
+    }   
 
-    .form__campo--steps label {
-        margin-bottom: 0.5rem;
+    .dietItem {
+        text-transform: capitalize;
     }
-
-    .form__campo--steps input {
-        padding: 0.5rem;
-        border: 1px solid #ccc;
-        border-radius: 4px;
-        margin-bottom: 0.5rem;
-    }
+   

@@ -80,84 +80,59 @@ router.get('/recipes/:idRecipe', async (req, res) => {
 
 router.get('/recipes', async (req, res) => {
     const { name } = req.query;
-    let recipes = [];
-    
-    // Buscar en la base de datos
     if (name) {
-        const dbRecipes = await Recipe.findAll({
-            where: {
-                name: {
-                    [Op.iLike]: `%${name}%`,
+        name.toLocaleLowerCase()
+    }
+    let recipes = [];
+    try {
+
+        // Buscar en la base de datos
+        if (name) {
+            const dbRecipes = await Recipe.findAll({
+                where: {
+                    name: {
+                        [Op.iLike]: `%${name}%`,
+                    },
                 },
-            },
-            include: {
-                model: Diet,
-                attributes: ['name'],
-            },
-        });
-        recipes.push(...dbRecipes);
-    }
-    recipes = recipes.map((recipe) => {
-        if (recipe.Diets) {
-            recipe.dataValues.diets = recipe.Diets.map(diet => diet.name);
-            delete recipe.dataValues.Diets;
+                include: {
+                    model: Diet,
+                    attributes: ['name'],
+                },
+            });
+            recipes.push(...dbRecipes);
         }
-        console.log(recipe)
-        return recipe
-    });
-    // Si no se encontraron suficientes recetas en la base de datos, buscar en la API
-    if (recipes.length < 9) {
-        const query = name ? `query=${name}&` : '';
-        const apiResponse = await axios.get(
-            `${SPOONACULAR}/recipes/complexSearch?${query}addRecipeInformation=true&apiKey=${API_KEY}&number=${9 - recipes.length}`
-        );
-        const apiRecipes = apiResponse.data.results.map((r) => ({
-            id: r.id,
-            title: r.title,
-            image: r.image,
-            healthScore: r.healthScore,
-            diets: r.diets,
-        }));
-        recipes.push(...apiRecipes.slice(0, 9 - recipes.length));
+        recipes = recipes.map((recipe) => {
+            if (recipe.Diets) {
+                recipe.dataValues.diets = recipe.Diets.map(diet => diet.name);
+                delete recipe.dataValues.Diets;
+            }
+            console.log(recipe)
+            return recipe
+        });
+        // Si no se encontraron suficientes recetas en la base de datos, buscar en la API
+        if (recipes.length < 100) {
+            const query = name ? `query=${name}&` : '';
+            const apiResponse = await axios.get(
+                `${SPOONACULAR}/recipes/complexSearch?${query}addRecipeInformation=true&apiKey=${API_KEY}&number=${100 - recipes.length}`
+            );
+            const apiRecipes = apiResponse.data.results.map((r) => ({
+                id: r.id,
+                title: r.title,
+                image: r.image,
+                healthScore: r.healthScore,
+                diets: r.diets,
+            }));
+            recipes.push(...apiRecipes.slice(0, 100 - recipes.length));
+        }
+
+        res.json(recipes.slice(0, 100));
+        console.log(recipes)
+    } catch (error) {
+        if (!name) {
+            res.status(200).json([])
+        }
     }
-
-    res.json(recipes.slice(0, 9));
-    console.log(recipes)
 });
-
-
-
-// router.get('/recipes/', async (req, res) => {
-//     var { name } = req.query; //guardo el name recibido por query en una constante
-//     if (!name) {
-//         name=''
-//     }
-//     const recipes = await Recipe.findAll({
-//         where: {
-//             name: name.toLowerCase() // busco todas las recetas que incluyan la palabra pasada por query en su nombre
-//         },
-//         include: [{
-//             model: Diet,
-//             attributes: ['name']
-//         }]
-//     })
-//     if (recipes.length > 0) {
-//         res.status(200).json(recipes);
-//     }
-//     else {
-//         try {
-//             const response = await axios.get(
-//                 `${SPOONACULAR}/recipes/complexSearch?query=${name}&addRecipeInformation=true&apiKey=${API_KEY}`
-//                 )
-//             const recipes = response.data.results.map(
-//                     ({ id, title, image, healthScore, diets }) => ({ id, title, image, healthScore, diets })
-//                 )
-//             return res.status(200).json({recipes})
-//         } catch (error) {
-//             res.status(404).json({error:`No se encontró ninguna receta`})
-//         }
-//     }
-// })
 
 router.post('/recipes', async (req, res) => {
     const { name, image, resume, healthScore, steps, diets } = req.body
@@ -181,62 +156,136 @@ router.post('/recipes', async (req, res) => {
         res.status(400).json({ error: 'No se pudo crear' })
     }
 })
+// router.get('/diets/', async (req, res) => {
+//     try {
+
+//         var allDbDiets = await Diet.findAll()
+//         if (allDbDiets.length === 10) {
+//             res.status(200).json(allDbDiets)
+//         } else {
+
+//             try {
+//                 const response = await axios.get(
+//                     `${SPOONACULAR}/recipes/complexSearch?addRecipeInformation=true&analyzedInstructions=true&number=45&apiKey=${API_KEY}`
+//                 );
+//                 const preFilterDiets = response.data.results.map(({ diets }) => ({ diets })
+//                 )
+
+//                 const diets = [];
+
+//                 preFilterDiets.forEach((item) => {
+//                     item.diets.forEach((diet) => {
+//                         switch (diet) {
+//                             case "paleolithic":
+//                             case "primal":
+//                             case "whole 30":
+//                             case "lacto ovo vegetarian":
+//                             case "vegan":
+//                             case "vegetarian":
+//                                 if (!diets.includes(diet)) {
+//                                     diets.push(diet);
+//                                 }
+//                                 break;
+//                             case "dairy free":
+//                                 const ovoDiet = "ovo vegetarian";
+//                                 if (!diets.includes(ovoDiet)) {
+//                                     diets.push(ovoDiet);
+//                                 }
+//                                 break;
+//                             case "egg free":
+//                                 const lactoDiet = "lacto vegetarian";
+//                                 if (!diets.includes(lactoDiet)) {
+//                                     diets.push(lactoDiet);
+//                                 }
+//                                 break;
+//                             default:
+//                                 if (!diets.includes(diet)) {
+//                                     diets.push(diet);
+//                                 }
+//                                 break;
+//                         }
+//                     });
+//                 });
+
+//                 for (let i = 0; i < diets.length; i++) {
+//                     const diet = diets[i]
+//                     await Diet.findOrCreate({ where: { name: diet } });
+//                 }
+//                 allDbDiets = await Diet.findAll()
+//                 res.status(200).json(allDbDiets)
+
+
+//             } catch (error) {
+//                 res.json({ error: 'error' })
+//             }
+//         }
+//     } catch (error) {
+//         res.json({ error: 'error' })
+//     }
+// })
+
 router.get('/diets/', async (req, res) => {
     try {
-        const response = await axios.get(
-            `${SPOONACULAR}/recipes/complexSearch?addRecipeInformation=true&analyzedInstructions=true&number=5000&apiKey=${API_KEY}`
-        );
-        const preFilterDiets = response.data.results.map(({ diets }) => ({ diets })
-        )
-
-        const diets = [];
-
-        preFilterDiets.forEach((item) => {
-            item.diets.forEach((diet) => {
-                switch (diet) {
-                    case "paleolithic":
-                    case "primal":
-                    case "whole 30":
-                    case "lacto ovo vegetarian":
-                    case "vegan":
-                    case "vegetarian":
-                        if (!diets.includes(diet)) {
-                            diets.push(diet);
-                        }
-                        break;
-                    case "dairy free":
-                        const ovoDiet = "ovo vegetarian";
-                        if (!diets.includes(ovoDiet)) {
-                            diets.push(ovoDiet);
-                        }
-                        break;
-                    case "egg free":
-                        const lactoDiet = "lacto vegetarian";
-                        if (!diets.includes(lactoDiet)) {
-                            diets.push(lactoDiet);
-                        }
-                        break;
-                    default:
-                        if (!diets.includes(diet)) {
-                            diets.push(diet);
-                        }
-                        break;
-                }
-            });
+      const allDbDiets = await Diet.findAll();
+  
+      if (allDbDiets.length === 10) {
+        return res.status(200).json(allDbDiets);
+      }
+  
+      const response = await axios.get(
+        `${SPOONACULAR}/recipes/complexSearch?addRecipeInformation=true&analyzedInstructions=true&number=45&apiKey=${API_KEY}`
+      );
+  
+      const preFilterDiets = response.data.results.map(({ diets }) => ({ diets }));
+  
+      const diets = [];
+  
+      preFilterDiets.forEach((item) => {
+        item.diets.forEach((diet) => {
+          switch (diet) {
+            case 'paleolithic':
+            case 'primal':
+            case 'whole 30':
+            case 'lacto ovo vegetarian':
+            case 'vegan':
+            case 'vegetarian':
+              if (!diets.includes(diet)) {
+                diets.push(diet);
+              }
+              break;
+            case 'dairy free':
+              const ovoDiet = 'ovo vegetarian';
+              if (!diets.includes(ovoDiet)) {
+                diets.push(ovoDiet);
+              }
+              break;
+            case 'egg free':
+              const lactoDiet = 'lacto vegetarian';
+              if (!diets.includes(lactoDiet)) {
+                diets.push(lactoDiet);
+              }
+              break;
+            default:
+              if (!diets.includes(diet)) {
+                diets.push(diet);
+              }
+              break;
+          }
         });
-
-        for (let i = 0; i < diets.length; i++) {
-            const diet = diets[i]
-            await Diet.findOrCreate({ where: { name: diet } });
-        }
-        const allDbDiets = await Diet.findAll()
-        res.status(200).json(allDbDiets)
-
-
+      });
+  
+      for (let i = 0; i < diets.length; i++) {
+        const diet = diets[i];
+        await Diet.findOrCreate({ where: { name: diet } });
+      }
+  
+      const updatedDiets = await Diet.findAll();
+      return res.status(200).json(updatedDiets);
     } catch (error) {
-        res.json({ error: 'error' })
+      console.error(error);
+      return res.status(500).json({ error: 'Internal server error' });
     }
-})
-
+  });
+  
 
 module.exports = router;
