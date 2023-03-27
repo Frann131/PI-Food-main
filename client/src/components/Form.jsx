@@ -8,6 +8,7 @@ const Form = () => {
     const diets = useSelector(state => state.diets);
     const [disableSubmit, setDisableSubmit] = useState(true);
     const [disableAddStep, setDisableAddStep] = useState(true)
+    const [postStatus, setPostStatus] = useState({})
     const [formData, setFormData] = useState({
         name: '',
         image: '',
@@ -29,6 +30,22 @@ const Form = () => {
         dispatch(getDiets());
     }, [dispatch]);
 
+    useEffect(() => {
+        const nameRegex = /^[a-zA-Z.,\s]*$/;
+        if (formData.name.trim().length > 10 && formData.name.trim().length < 100 &&
+            /\.(gif|jpe?g|png)$/i.test(formData.image) &&
+            (formData.image.startsWith('https://') || formData.image.startsWith('http://')) &&
+            formData.image.trim().length > 0 &&
+            formData.resume.trim().length > 50 && formData.resume.trim().length < 1200 &&
+            formData.healthScore >= 0 && formData.healthScore < 100 &&
+            formData.steps.every(step => step.step.trim().length > 0 && step.step.trim().length < 400) &&
+            nameRegex.test(formData.name.trim())) {
+            setDisableSubmit(false);
+        } else {
+            setDisableSubmit(true);
+        }
+    }, [formData]);
+
     const handleInputChange = (e) => {
         setFormData({
             ...formData,
@@ -38,12 +55,13 @@ const Form = () => {
     const handleRecipeNameChange = (event) => {
         const value = event.target.value;
         const valueLength = value.trim().length
-        if (valueLength > 10 && valueLength < 100) {
-            setDisableSubmit(false)
+        const nameRegex = /^[a-zA-Z.,\s]*$/;
+        const validCharacters = nameRegex.test(formData.name.trim())
+        if (valueLength > 10 && valueLength < 100 && validCharacters) {
             event.target.style.backgroundColor = '#fff'
         } else {
             event.target.style.backgroundColor = '#fcc'
-            setDisableSubmit(true)
+
         }
     };
 
@@ -54,12 +72,12 @@ const Form = () => {
         const isValidImage = /\.(gif|jpe?g|png)$/i.test(value);
         const isHttps = value.startsWith('https://')
         const isHttp = value.startsWith('http://')
-        if (!isValidImage || (!isHttps && !isHttp)) {
+        if (!isValidImage || (!isHttps && !isHttp) || value.length === 0) {
             event.target.style.backgroundColor = '#fcc'
-            setDisableSubmit(true)
+
         } else {
             event.target.style.backgroundColor = '#fff'
-            setDisableSubmit(false)
+
         }
     };
 
@@ -67,32 +85,32 @@ const Form = () => {
         const value = event.target.value;
         const valueLength = value.trim().length;
         if (valueLength > 50 && valueLength < 1200) {
-            setDisableSubmit(false)
+
             event.target.style.backgroundColor = '#fff'
         } else {
-            setDisableSubmit(true);
+            ;
             event.target.style.backgroundColor = '#fcc'
         }
     };
-    
+
     const handleHealthScoreChange = (event) => {
         const value = event.target.value;
         if (value >= 0 && value < 100) {
-            setDisableSubmit(false)
+
             event.target.style.backgroundColor = '#fff'
         } else {
-            setDisableSubmit(true)
+
             event.target.style.backgroundColor = '#fcc'
         }
     };
-    
+
     const handleStepsChange = (e, index) => {
         const newSteps = [...formData.steps];
         const stepValue = e.target.value.trim();
         const stepLength = stepValue.length;
 
-        if (stepLength > 0 && stepLength < 400 && e.target.value!=='') {
-            setDisableSubmit(false)
+        if (stepLength > 0 && stepLength < 400 && stepValue !== '') {
+
             setDisableAddStep(false)
             e.target.style.backgroundColor = '#fff'
             newSteps[index] = { ...newSteps[index], step: stepValue };
@@ -102,12 +120,12 @@ const Form = () => {
             });
 
         } else {
-            setDisableSubmit(true)
+
             setDisableAddStep(true)
             e.target.style.backgroundColor = '#fcc'
         }
     };
-    
+
 
     const handleDietsChange = (e) => {
         const dietId = Number(e.target.value);
@@ -140,9 +158,10 @@ const Form = () => {
         handleSummaryChange(event);
         handleInputChange(event)
     }
-    const handleSubmit = (e) => {
+    const handleSubmit = async (e) => {
         e.preventDefault();
-        dispatch(postRecipe(formData));
+        const response = await dispatch(postRecipe(formData));
+        setPostStatus(response.data)
         setFormData({
             name: '',
             image: '',
@@ -164,7 +183,8 @@ const Form = () => {
                     value={formData.name}
                     onChange={handleCombinedNameChange}
                     className={styles.input}
-                    placeholder='Example: Full Vegan Burger'
+                    placeholder='Example: Full Vegan Burger (10-100 characters)'
+                    autoComplete='off'
                 />
             </div>
             <div className={styles.campo}>
@@ -176,7 +196,8 @@ const Form = () => {
                     value={formData.image}
                     onChange={handleCombinedImageChange}
                     className={styles.input}
-                    placeholder='Example: https://www.foodimages-example.com/image/vegan_burger.jpg'
+                    placeholder='Example: https://www.foodimages-example.com/image/vegan_burger.jpg (Must be JPG/JPEG/PNG/GIF)'
+                    autoComplete='off'
                 />
             </div>
             <div className={styles.campo}>
@@ -188,7 +209,7 @@ const Form = () => {
                     value={formData.resume}
                     onChange={handleCombinedSummaryChange}
                     className={styles.textarea}
-                    placeholder='Enter recipe summary'
+                    placeholder='Enter recipe summary (50-1200 characters)'
                 />
             </div>
             <div className={styles.campo}>
@@ -201,40 +222,50 @@ const Form = () => {
                     onChange={handleCombinedHealthScoreChange}
                     className={styles.input}
                     placeholder='It has to be a value between 0 and 100'
+                    autoComplete='off'
                 />
             </div>
             <div className={styles.campoSteps}>
                 <label className={styles.label} htmlFor="steps">Steps</label>
                 <div>
-                    <input
-                        type="number"
-                        value={formData.steps.length > 0 ? formData.steps[0].number : '' + '°'}
-                        readOnly
-                        className={styles.stepNumber}
-                        style={{ appearance: 'none' }}
-                    />
-                    <input
-                        type="text"
-                        value={formData.steps.length > 0 ? formData.steps[0].step : ''}
-                        onChange={(e) => handleStepsChange(e, 0)}
-                        className={styles.stepInput}
-                    />
-                </div>
-                {formData.steps.slice(1).map((step, index) => (
-                    <div key={index + 1}>
+                    <div style={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-around', textAlign: 'center' }}>
+                        <p style={{ border: '2px solid grey', width: '28px', borderRadius: '50%' }}>{formData.steps.length > 0 ? formData.steps[0].number : '' + '°'}</p>
                         <input
                             type="number"
-                            value={step.number}
+                            value={formData.steps.length > 0 ? formData.steps[0].number : '' + '°'}
                             readOnly
                             className={styles.stepNumber}
-                            style={{ appearance: 'none' }}
+                            style={{ display: 'none' }}
                         />
                         <input
                             type="text"
-                            value={step.step}
-                            onChange={(e) => handleStepsChange(e, index + 1)}
+                            value={formData.steps.length > 0 ? formData.steps[0].step : ''}
+                            onChange={(e) => handleStepsChange(e, 0)}
                             className={styles.stepInput}
+                            placeholder='First step...'
+                            autoComplete='off'
                         />
+                    </div>
+                </div>
+                {formData.steps.slice(1).map((step, index) => (
+                    <div key={index + 1}>
+                        <div style={{ display: 'flex', flexDirection: 'row', justifyContent: 'space-around', textAlign: 'center' }}>
+                            <p style={{ border: '2px solid grey', width: '28px', borderRadius: '50%' }} >{step.number}</p>
+                            <input
+                                type="number"
+                                value={step.number}
+                                readOnly
+                                className={styles.stepNumber}
+                                style={{ display: 'none' }}
+                            />
+                            <input
+                                type="text"
+                                value={step.step}
+                                onChange={(e) => handleStepsChange(e, index + 1)}
+                                className={styles.stepInput}
+                                autoComplete='off'
+                            />
+                        </div>
                     </div>
                 ))}
                 <button disabled={disableAddStep} className={styles.button} type="button" onClick={() => setFormData({ ...formData, steps: [...formData.steps, { number: formData.steps.length + 1, step: ' ' }] })}>
@@ -252,13 +283,18 @@ const Form = () => {
                             value={diet.id}
                             checked={formData.diets.includes(diet.id)}
                             onChange={handleDietsChange}
+                            className={styles.check}
                         />
                         {diet.name}
                     </label>
                 ))}
             </div>
 
-            <button className={styles.button} type="submit" disabled={disableSubmit}>Agregar Receta</button>
+            <button style={{fontSize: '1.2rem'}} className={styles.button} type="submit" disabled={disableSubmit}>Post recipe</button>
+            <div className={postStatus.success ? styles.success : styles.error}>
+                {postStatus.success ? postStatus.success : postStatus.error}
+            </div>
+
         </form>
 
 

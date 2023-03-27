@@ -66,10 +66,6 @@ router.get('/recipes/:idRecipe', async (req, res) => {
                 steps: fullSteps,
                 diets: recipeApi.diets,
             }
-            // for (let i=0; i<recipeApi.diets; i++) {
-            //     const diet = recipeApi.diets[i]
-            //     await Diet.findOrCreate({ where: { name: diet } });
-            // }
             console.log(recipeData)
             return res.status(200).json(recipeData) // devuelvo la receta
         } catch (error) {
@@ -106,7 +102,7 @@ router.get('/recipes', async (req, res) => {
                 recipe.dataValues.diets = recipe.Diets.map(diet => diet.name);
                 delete recipe.dataValues.Diets;
             }
-            console.log(recipe)
+
             return recipe
         });
         // Si no se encontraron suficientes recetas en la base de datos, buscar en la API
@@ -117,7 +113,7 @@ router.get('/recipes', async (req, res) => {
             );
             const apiRecipes = apiResponse.data.results.map((r) => ({
                 id: r.id,
-                title: r.title,
+                name: r.title,
                 image: r.image,
                 healthScore: r.healthScore,
                 diets: r.diets,
@@ -136,8 +132,12 @@ router.get('/recipes', async (req, res) => {
 
 router.post('/recipes', async (req, res) => {
     const { name, image, resume, healthScore, steps, diets } = req.body
-    console.log(name, image, resume, healthScore, steps, diets)
     try {
+        const nameExists = await Recipe.findOne({ where: { name: name } })
+        const imageExists = await Recipe.findOne({ where: { image: image } })
+        if (nameExists && imageExists) {
+            return res.status(409).json({ error: 'La receta ya existe' })
+        }
         const newRecipeData = {
             name: name,
             image: image,
@@ -146,83 +146,13 @@ router.post('/recipes', async (req, res) => {
             steps: steps,
             createdInDB: true,
         }
-        // console.log(newRecipeData)
         const newRecipe = await Recipe.create(newRecipeData)
         await newRecipe.addDiets(diets)
-        console.log(newRecipeData)
-        console.log(newRecipe)
-        res.status(201).json(newRecipe instanceof Recipe)
+        return res.status(201).json({ success: 'Recipe created successfully' })
     } catch (error) {
-        res.status(400).json({ error: 'No se pudo crear' })
+        return res.status(500).json({ error: 'There was an error creating the recipe' })
     }
 })
-// router.get('/diets/', async (req, res) => {
-//     try {
-
-//         var allDbDiets = await Diet.findAll()
-//         if (allDbDiets.length === 10) {
-//             res.status(200).json(allDbDiets)
-//         } else {
-
-//             try {
-//                 const response = await axios.get(
-//                     `${SPOONACULAR}/recipes/complexSearch?addRecipeInformation=true&analyzedInstructions=true&number=45&apiKey=${API_KEY}`
-//                 );
-//                 const preFilterDiets = response.data.results.map(({ diets }) => ({ diets })
-//                 )
-
-//                 const diets = [];
-
-//                 preFilterDiets.forEach((item) => {
-//                     item.diets.forEach((diet) => {
-//                         switch (diet) {
-//                             case "paleolithic":
-//                             case "primal":
-//                             case "whole 30":
-//                             case "lacto ovo vegetarian":
-//                             case "vegan":
-//                             case "vegetarian":
-//                                 if (!diets.includes(diet)) {
-//                                     diets.push(diet);
-//                                 }
-//                                 break;
-//                             case "dairy free":
-//                                 const ovoDiet = "ovo vegetarian";
-//                                 if (!diets.includes(ovoDiet)) {
-//                                     diets.push(ovoDiet);
-//                                 }
-//                                 break;
-//                             case "egg free":
-//                                 const lactoDiet = "lacto vegetarian";
-//                                 if (!diets.includes(lactoDiet)) {
-//                                     diets.push(lactoDiet);
-//                                 }
-//                                 break;
-//                             default:
-//                                 if (!diets.includes(diet)) {
-//                                     diets.push(diet);
-//                                 }
-//                                 break;
-//                         }
-//                     });
-//                 });
-
-//                 for (let i = 0; i < diets.length; i++) {
-//                     const diet = diets[i]
-//                     await Diet.findOrCreate({ where: { name: diet } });
-//                 }
-//                 allDbDiets = await Diet.findAll()
-//                 res.status(200).json(allDbDiets)
-
-
-//             } catch (error) {
-//                 res.json({ error: 'error' })
-//             }
-//         }
-//     } catch (error) {
-//         res.json({ error: 'error' })
-//     }
-// })
 
 router.get('/diets/', async (req, res) => {
     try {
@@ -242,12 +172,12 @@ router.get('/diets/', async (req, res) => {
 
         preFilterDiets.forEach((item) => {
             item.diets.forEach((diet) => {
-                        if (!diets.includes(diet)) {
-                            diets.push(diet);
-                        }
-                        
-                })
-            });
+                if (!diets.includes(diet)) {
+                    diets.push(diet);
+                }
+
+            })
+        });
 
 
         for (let i = 0; i < diets.length; i++) {

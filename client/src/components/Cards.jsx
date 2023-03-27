@@ -13,7 +13,6 @@ function Cards({ recipes, getRecipes }) {
   const name = queryParams.get('name')
 
   const [selectedDiets, setSelectedDiets] = useState([]);
-  const [dietsLoaded, setDietsLoaded] = useState(false)
   const [isLoading, setIsLoading] = useState(true);
   const [hsSort, setHsSort] = useState(false)
   const [currentPage, setCurrentPage] = useState(1)
@@ -27,7 +26,7 @@ function Cards({ recipes, getRecipes }) {
     }
     fetchData();
   }, [getRecipes, name]);
-
+  console.log('recipes:', recipes)
   const [diets, setDiets] = useState([]);
 
   useEffect(() => {
@@ -101,8 +100,8 @@ function Cards({ recipes, getRecipes }) {
         ) : (
           sortedRecipes.slice(firstPostIndex, lastPostIndex).map((recipe) => (
             <Card
-              key={recipe.id}
-              name={recipe.title}
+              id={recipe.id}
+              name={recipe.name}
               healthScore={recipe.healthScore}
               image={recipe.image}
               diets={recipe.diets}

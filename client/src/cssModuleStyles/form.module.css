@@ -1,96 +1,138 @@
-    .form {
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        padding: 2rem;
-        background-color: #f2f2f2;
-        border-radius: 0.5rem;
-        box-shadow: 0 0.5rem 1rem rgba(0 0 0 0.2);
-        max-width: 40rem;
-        margin: 0 auto;
-        font-family: 'Poppins' sans-serif;
-    }
-
-    .campo {
-        display: flex;
-        flex-direction: column;
-        margin-bottom: 1rem;
-        width: 100%;
-    }
-    .campoSteps {
-        display: flex;
-        flex-direction: column;
-        margin-bottom: 1rem;
-        width: 100%;
-    }
-
-    .label {
-        margin-bottom: 0.5rem;
-        font-weight: bold;
-        text-transform: uppercase;
-        font-size: 0.8rem;
-        color: #333;
-        font-family: 'Poppins', sans-serif;
-    }
-
-    .input {
-        padding: 0.5rem;
-        border: none;
-        border-bottom: 2px solid #ccc;
-        width: 100%;
-        font-size: 1rem;
-        margin-bottom: 1rem;
-        font-family: 'Poppins', sans-serif;
-    }
-
-    .textarea {
-        padding: 0.5rem;
-        border: 2px solid #ccc;
-        width: 100%;
-        font-size: 1rem;
-        margin-bottom: 1rem;
-        font-family: 'Poppins', sans-serif;
-    }
-
-    .button {
-        padding: 0.5rem 1rem;
-        background-color: #333;
-        color: #fff;
-        border: none;
-        border-radius: 0.5rem;
-        font-size: 1rem;
-        cursor: pointer;
-        font-family: 'Poppins', sans-serif;
-    }
-    .button:disabled {
-        background-color: #777;
-        cursor: not-allowed;
-    }
+@import url('https://fonts.googleapis.com/css2?family=Baloo+2:wght@400;600;700;800&display=swap');
 
 
-    .stepInput {
-        padding: 0.5rem;
-        border: none;
-        border-bottom: 2px solid #ccc;
-        width: 90%;
-        font-size: 1rem;
-        margin-bottom: 1rem;
-    }
-    .stepNumber {
-        width: calc(5% - 1px);
-        padding: 0;
-        margin-right: 5px;
-        text-align: center;
-        align-items: center;
-        align-content: center;
-        font-family: 'Poppins', sans-serif;
-        font-size: 1rem;
-        border: 2px solid #555;
-        border-radius: 30%;
-        color: #555;
-    }   
+.form {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 2rem;
+    background-color: #f2f2f2;
+    border-radius: 0.5rem;
+    box-shadow: 0 0.5rem 1rem rgba(0 0 0 0.2);
+    max-width: 40rem;
+    margin: 0 auto;
+    font-family: 'Baloo 2', sans-serif;
+}
 
-    .dietItem {
-        text-transform: capitalize;
-    }
-   
+.campo {
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 1rem;
+    width: 100%;
+}
+
+.campoSteps {
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 1rem;
+    width: 100%;
+}
+
+.label {
+    margin-bottom: 0.5rem;
+    font-weight: bold;
+    text-transform: uppercase;
+    font-size: 0.8rem;
+    color: #333;
+    font-family: 'Baloo 2', sans-serif;
+}
+
+.input {
+    padding: 0.5rem;
+    border: none;
+    border-bottom: 2px solid #ccc;
+    width: 100%;
+    font-size: 0.8rem;
+    margin-bottom: 1rem;
+    font-family: 'Baloo 2', sans-serif;
+}
+
+.textarea {
+    padding: 0.5rem;
+    border: 2px solid #ccc;
+    width: 100%;
+    font-size: 0.8rem;
+    margin-bottom: 1rem;
+    font-family: 'Baloo 2', sans-serif;
+}
+
+.button {
+    padding: 0.5rem 1rem;
+    background-color: #333;
+    color: #fff;
+    border: none;
+    border-radius: 0.5rem;
+    font-size: 0.8rem;
+    cursor: pointer;
+    font-family: 'Baloo 2', sans-serif;
+    width: 200px;
+}
+
+.button:disabled {
+    background-color: #777;
+    cursor: not-allowed;
+}
+
+
+.stepInput {
+    padding: 0.5rem;
+    border: none;
+    border-bottom: 2px solid #ccc;
+    width: 90%;
+    font-size: 0.8rem;
+    margin-bottom: 1rem;
+    font-family: 'Baloo 2', sans-serif;
+}
+
+.stepNumber {
+    width: 25px;
+    height: 25px;
+    /* display: inline-flex;
+    flex-direction: row;
+    flex-wrap: wrap; */
+    padding: 0;
+    margin-right: 5px;
+    text-align: center;
+    align-items: center;
+    align-content: center;
+    font-family: 'Baloo 2', sans-serif;
+    font-size: 0.8rem;
+    border: 2px solid #555;
+    border-radius: 50%;
+    color: #555;
+    cursor: default;
+}
+
+.dietItem {
+    text-transform: capitalize;
+    align-items: start;
+    align-content: start;
+    font-size: 0.8rem;
+    padding: 0;
+    margin: 0;
+}
+
+.check {
+    appearance: none;
+    height: 0.8rem;
+    width: 0.8rem;
+    border-radius: 20%;
+    border: 2px solid grey;
+    align-items: center;
+    margin: 0 5px 0 0;
+}
+.check:checked {
+    background-color:#28a745;
+    border-color: 2px solid #28a745;
+}
+.check:hover {
+    cursor: pointer
+}
+.error {
+    color: #900;
+    font-weight: 800;
+}
+.success {
+    color: #090;
+    font-weight: 800;
+}
