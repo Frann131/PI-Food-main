@@ -208,7 +208,7 @@ const Form = () => {
                 <div>
                     <input
                         type="number"
-                        value={formData.steps.length > 0 ? formData.steps[0].number : ''}
+                        value={formData.steps.length > 0 ? formData.steps[0].number : '' + '°'}
                         readOnly
                         className={styles.stepNumber}
                         style={{ appearance: 'none' }}

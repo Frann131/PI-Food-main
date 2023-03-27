@@ -129,7 +129,7 @@ router.get('/recipes', async (req, res) => {
         console.log(recipes)
     } catch (error) {
         if (!name) {
-            res.status(200).json([])
+            res.status(404).json([])
         }
     }
 });
@@ -226,66 +226,41 @@ router.post('/recipes', async (req, res) => {
 
 router.get('/diets/', async (req, res) => {
     try {
-      const allDbDiets = await Diet.findAll();
-  
-      if (allDbDiets.length === 10) {
-        return res.status(200).json(allDbDiets);
-      }
-  
-      const response = await axios.get(
-        `${SPOONACULAR}/recipes/complexSearch?addRecipeInformation=true&analyzedInstructions=true&number=45&apiKey=${API_KEY}`
-      );
-  
-      const preFilterDiets = response.data.results.map(({ diets }) => ({ diets }));
-  
-      const diets = [];
-  
-      preFilterDiets.forEach((item) => {
-        item.diets.forEach((diet) => {
-          switch (diet) {
-            case 'paleolithic':
-            case 'primal':
-            case 'whole 30':
-            case 'lacto ovo vegetarian':
-            case 'vegan':
-            case 'vegetarian':
-              if (!diets.includes(diet)) {
-                diets.push(diet);
-              }
-              break;
-            case 'dairy free':
-              const ovoDiet = 'ovo vegetarian';
-              if (!diets.includes(ovoDiet)) {
-                diets.push(ovoDiet);
-              }
-              break;
-            case 'egg free':
-              const lactoDiet = 'lacto vegetarian';
-              if (!diets.includes(lactoDiet)) {
-                diets.push(lactoDiet);
-              }
-              break;
-            default:
-              if (!diets.includes(diet)) {
-                diets.push(diet);
-              }
-              break;
-          }
-        });
-      });
-  
-      for (let i = 0; i < diets.length; i++) {
-        const diet = diets[i];
-        await Diet.findOrCreate({ where: { name: diet } });
-      }
-  
-      const updatedDiets = await Diet.findAll();
-      return res.status(200).json(updatedDiets);
+        const allDbDiets = await Diet.findAll();
+
+        if (allDbDiets.length === 10) {
+            return res.status(200).json(allDbDiets);
+        }
+
+        const response = await axios.get(
+            `${SPOONACULAR}/recipes/complexSearch?addRecipeInformation=true&analyzedInstructions=true&number=45&apiKey=${API_KEY}`
+        );
+
+        const preFilterDiets = response.data.results.map(({ diets }) => ({ diets }));
+
+        const diets = [];
+
+        preFilterDiets.forEach((item) => {
+            item.diets.forEach((diet) => {
+                        if (!diets.includes(diet)) {
+                            diets.push(diet);
+                        }
+                        
+                })
+            });
+
+
+        for (let i = 0; i < diets.length; i++) {
+            const diet = diets[i];
+            await Diet.findOrCreate({ where: { name: diet } });
+        }
+
+        const updatedDiets = await Diet.findAll();
+        return res.status(200).json(updatedDiets);
     } catch (error) {
-      console.error(error);
-      return res.status(500).json({ error: 'Internal server error' });
+        return res.status(500).json([]);
     }
-  });
-  
+});
+
 
 module.exports = router;

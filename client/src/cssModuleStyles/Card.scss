@@ -1,3 +1,5 @@
+@import url('https://fonts.googleapis.com/css2?family=Baloo+2:wght@400;600;700;800&display=swap');
+
 .cirContainer {
     display: flex;
     justify-content: center;
@@ -14,11 +16,13 @@
     background: var(--healthScore-color);
 
     .score {
-        font-weight: 600;
+        font-weight: 800;
         font-size: 14pt;
         color: white;
-        text-shadow: 0px 0px 11px rgba(0, 0, 0, 0.7);
+        text-shadow: 0 0 5px rgba(0, 0, 0, 1);
         background-color: none;
+        font-family: 'Baloo 2', sans-serif;
+
     }
 }
 
@@ -38,11 +42,10 @@ h2 {
     align-content: stretch;
     border-radius: 20px;
     box-shadow: 0 0 10px 2px rgba(77, 122, 22, 0.52);
-    margin: 10px 10px 10px 25px;
+    margin: 10px 15px 10px 15px;
     background-color: #a9d675;
-    font-family: 'Poppins', sans-serif;
-    padding-bottom: 10px;
-    padding-top: 10px;
+    font-family: 'Baloo 2', sans-serif;
+    padding: 10px;
     min-height: 400px;
     transition: background-color 0.15s ease-in-out
 }
@@ -64,15 +67,14 @@ h2 {
 
 .title {
     margin: 0;
-    font-size: 14px;
+    font-size: 16px;
     text-align: center;
-    margin: 10px;
-    font-weight: 600;
+    font-weight: 800;
 }
 
 .diets {
     margin: 5px;
-    font-size: small;
+    font-size: 14px;
     padding-bottom: 5px;
     text-align: center;
 }
@@ -89,7 +91,7 @@ h2 {
     width: auto;
     height: auto;
     margin-bottom: 0px;
-    font-family: 'Poppins', sans-serif;
+    font-family: 'Baloo 2', sans-serif;
 }
 
 .detail:hover {

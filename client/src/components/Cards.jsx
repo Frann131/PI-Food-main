@@ -33,7 +33,7 @@ function Cards({ recipes, getRecipes }) {
   useEffect(() => {
     dispatch(getDiets())
       .then((data) => setDiets(data.payload));
-      
+
   }, [dispatch]);
 
   var totalPages = 0
@@ -72,18 +72,20 @@ function Cards({ recipes, getRecipes }) {
     <div className={styles.container}>
       <div className={styles.filtOrd}>
         <div className={styles.order}>
-          <div style={{ marginRight: '5px' }}>
+          <div style={{ marginRight: '5px', marginLeft: '15px' }}>
             Order by Healthscore:
           </div>
-          <select onChange={(e) => setHsSort(e.target.value)}>
+          <select style={{height: '20px'}} onChange={(e) => setHsSort(e.target.value)}>
             <option value="None">None</option>
             <option value="Ascending">Ascending</option>
             <option value="Descending">Descending</option>
           </select>
         </div>
-        <div className={styles.filte}>
+        <div className={styles.filter}>
+          <div style={{marginRight: '5px', fontSize: '10pt'}}>
           Filter by Diets:
-            <select multiple onChange={(e) => setSelectedDiets([...e.target.selectedOptions].map(option => option.value))}>
+          </div>
+            <select style={{marginRight: '35px'}} multiple onChange={(e) => setSelectedDiets([...e.target.selectedOptions].map(option => option.value))}>
               {diets.map(diet => <option key={diet.id} value={diet.name}>{diet.name}</option>)}
             </select>
         </div>

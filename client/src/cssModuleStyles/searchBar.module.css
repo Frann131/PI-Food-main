@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Baloo+2&display=swap');
 
 .searchInput{
     width: 200px;
@@ -15,7 +15,7 @@
     appearance: none;
     margin-bottom: 5px;
     border-radius: 0.25rem 0 0 0.25rem;
-    font-family: 'Poppins', sans-serif;
+    font-family: 'Baloo 2', sans-serif;
 }
 
 .searchInput:focus{
