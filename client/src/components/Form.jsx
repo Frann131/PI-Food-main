@@ -106,25 +106,32 @@ const Form = () => {
 
     const handleStepsChange = (e, index) => {
         const newSteps = [...formData.steps];
-        const stepValue = e.target.value.trim();
+        const stepValue = e.target.value;
         const stepLength = stepValue.length;
-
-        if (stepLength > 0 && stepLength < 400 && stepValue !== '') {
-
-            setDisableAddStep(false)
-            e.target.style.backgroundColor = '#fff'
-            newSteps[index] = { ...newSteps[index], step: stepValue };
-            setFormData({
-                ...formData,
-                steps: newSteps.map((step, i) => ({ ...step, number: i + 1 })),
-            });
-
+      
+        if (stepLength > 0 && stepLength < 400) {
+          setDisableAddStep(false);
+          e.target.style.backgroundColor = "#fff";
+          newSteps[index] = { ...newSteps[index], step: stepValue };
+          setFormData({
+            ...formData,
+            steps: newSteps.map((step, i) => ({ ...step, number: i + 1 })),
+          });
+        } else if (stepValue === "") {
+          setDisableAddStep(true);
+          e.target.style.backgroundColor = "#fcc";
+        } else if (stepValue.length === 1) {
+          newSteps[index] = { ...newSteps[index], step: stepValue };
+          setFormData({
+            ...formData,
+            steps: newSteps.map((step, i) => ({ ...step, number: i + 1 })),
+          });
         } else {
-
-            setDisableAddStep(true)
-            e.target.style.backgroundColor = '#fcc'
+          setDisableAddStep(true);
+          e.target.style.backgroundColor = "#fcc";
         }
-    };
+      };
+      
 
 
     const handleDietsChange = (e) => {
