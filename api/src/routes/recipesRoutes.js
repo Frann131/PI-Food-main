@@ -121,7 +121,7 @@ router.post('/', async (req, res, next) => {
         const nameExists = await Recipe.findOne({ where: { name: name } })
         const imageExists = await Recipe.findOne({ where: { image: image } })
         if (nameExists && imageExists) {
-            return res.status(409).json({ error: 'La receta ya existe' })
+            return res.status(403).json({ error: 'La receta ya existe' })
         }
         const newRecipeData = {
             name: name,
