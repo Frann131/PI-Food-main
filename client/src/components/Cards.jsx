@@ -3,9 +3,15 @@ import { useLocation } from 'react-router-dom';
 import { connect, useDispatch } from 'react-redux';
 import { getRecipes, getDiets } from '../redux/actions.js';
 import Card from './Card';
+import Loading from './Loading'
 import styles from '../cssModuleStyles/Cards.module.css'
 import notfound from '../img/lupa not found.svg'
-import Loading from './Loading'
+
+const FILTER_OPTIONS = [
+  { value: 'all', label: 'All' },
+  { value: 'db', label: 'DB' },
+  { value: 'api', label: 'API' }
+];
 
 function Cards({ recipes, getRecipes }) {
   const location = useLocation()
@@ -14,15 +20,17 @@ function Cards({ recipes, getRecipes }) {
 
   const [selectedDiets, setSelectedDiets] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
-  const [hsSort, setHsSort] = useState(false)
+  const [sort, setSort] = useState(false)
   const [currentPage, setCurrentPage] = useState(1)
+  const [isFromDB, setIsFromDB] = useState(false);
+
   const lastPostIndex = currentPage * 9
   const firstPostIndex = lastPostIndex - 9
   const dispatch = useDispatch();
 
   useEffect(() => {
     async function fetchData() {
-      await getRecipes(name);
+      await getRecipes(name,);
       setIsLoading(false);
     }
     fetchData();
@@ -31,17 +39,19 @@ function Cards({ recipes, getRecipes }) {
   console.log('recipes:', recipes)
 
   const [diets, setDiets] = useState([]);
-  
+
   useEffect(() => {
     dispatch(getDiets())
-    .then((data) => setDiets(data.payload));
-    
+      .then((data) => setDiets(data.payload));
+
   }, [dispatch]);
-  
+
   var totalPages = 0
   const totalPagesArray = []
-  
+
   let filteredRecipes = recipes;
+
+
 
   if (selectedDiets.length > 0) {
     filteredRecipes = recipes.filter(recipe => selectedDiets.every(diet => recipe.diets.includes(diet)));
@@ -49,12 +59,12 @@ function Cards({ recipes, getRecipes }) {
 
   let sortedRecipes = filteredRecipes;
 
-  if (hsSort === 'Ascending') {
+  if (sort === 'HS Ascending') {
     sortedRecipes = filteredRecipes.sort((a, b) => a.healthScore - b.healthScore);
-  } else if (hsSort === 'Descending') {
+  } else if (sort === 'HS Descending') {
     sortedRecipes = filteredRecipes.sort((a, b) => b.healthScore - a.healthScore);
-  } else if (hsSort === 'None') {
-    sortedRecipes = filteredRecipes.sort((a, b) => a.id - b.id);
+  } else if (sort === 'Alphabetic') {
+    sortedRecipes = filteredRecipes.sort((a, b) => a.name - b.name);
   }
 
   console.log('diets:', diets)
@@ -74,21 +84,21 @@ function Cards({ recipes, getRecipes }) {
       <div className={styles.filtOrd}>
         <div className={styles.order}>
           <div style={{ marginRight: '5px', marginLeft: '15px' }}>
-            Order by Healthscore:
+            Order by:
           </div>
-          <select style={{height: '20px'}} onChange={(e) => setHsSort(e.target.value)}>
-            <option value="None">None</option>
-            <option value="Ascending">Ascending</option>
-            <option value="Descending">Descending</option>
+          <select style={{ height: '20px' }} onChange={(e) => setSort(e.target.value)}>
+            <option value="Alphabetic">None</option>
+            <option value="HS Ascending">Ascending</option>
+            <option value="HS Descending">Descending</option>
           </select>
         </div>
         <div className={styles.filter}>
-          <div style={{marginRight: '5px', fontSize: '10pt'}}>
-          Filter by Diets:
+          <div style={{ marginRight: '5px', fontSize: '10pt' }}>
+            Filter by Diets:
           </div>
-            <select style={{marginRight: '35px'}} multiple onChange={(e) => setSelectedDiets([...e.target.selectedOptions].map(option => option.value))}>
-              {diets.map(diet => <option key={diet.id} value={diet.name}>{diet.name}</option>)}
-            </select>
+          <select style={{ marginRight: '35px' }} multiple onChange={(e) => setSelectedDiets([...e.target.selectedOptions].map(option => option.value))}>
+            {diets.map(diet => <option key={diet.id} value={diet.name}>{diet.name}</option>)}
+          </select>
         </div>
       </div>
       <div className={styles.cards}>
