@@ -19,6 +19,7 @@ function Cards({ recipes, getRecipes }) {
   const lastPostIndex = currentPage * 9
   const firstPostIndex = lastPostIndex - 9
   const dispatch = useDispatch();
+
   useEffect(() => {
     async function fetchData() {
       await getRecipes(name);
@@ -26,29 +27,20 @@ function Cards({ recipes, getRecipes }) {
     }
     fetchData();
   }, [getRecipes, name]);
-  console.log('recipes:', recipes)
-  const [diets, setDiets] = useState([]);
 
+  console.log('recipes:', recipes)
+
+  const [diets, setDiets] = useState([]);
+  
   useEffect(() => {
     dispatch(getDiets())
-      .then((data) => setDiets(data.payload));
-
+    .then((data) => setDiets(data.payload));
+    
   }, [dispatch]);
-
+  
   var totalPages = 0
-
-  if (recipes.length > 0) {
-    totalPages = Math.ceil(recipes.length / 9)
-  } else {
-    totalPages = 1
-  }
-
   const totalPagesArray = []
-
-  for (let i = 1; i <= totalPages; i++) {
-    totalPagesArray.push(i)
-  }
-
+  
   let filteredRecipes = recipes;
 
   if (selectedDiets.length > 0) {
@@ -66,6 +58,16 @@ function Cards({ recipes, getRecipes }) {
   }
 
   console.log('diets:', diets)
+
+  if (sortedRecipes.length > 0) {
+    totalPages = Math.ceil(sortedRecipes.length / 9)
+  } else {
+    totalPages = 1
+  }
+
+  for (let i = 1; i <= totalPages; i++) {
+    totalPagesArray.push(i)
+  }
 
   return (
     <div className={styles.container}>
