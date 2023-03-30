@@ -90,7 +90,7 @@ router.get('/', async (req, res, next) => {
 
             return recipe
         });
-        // Si no se encontraron suficientes recetas en la base de datos, buscar en la API
+        
         if (recipes.length < 100) {
             const query = name ? `query=${name}&` : '';
             const apiResponse = await axios.get(
