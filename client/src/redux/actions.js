@@ -5,10 +5,11 @@ const GET_BY_ID = 'GET_BY_ID'
 const GET_DIETS = 'GET_DIETS'
 const POST_RECIPE = 'POST_RECIPE'
 const CLEAR_RECIPES = 'CLEAR_RECIPES'
+var baseUrl = 'http://localhost:3001'
 
 export function getRecipes(name) {
     return async function (dispatch) {
-        let url = 'http://localhost:3001/recipes';
+        let url = `${baseUrl}/recipes`;
         if (name) {
             url = `${url}?name=${name}`;
         }
