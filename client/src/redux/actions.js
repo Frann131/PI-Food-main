@@ -5,7 +5,7 @@ const GET_BY_ID = 'GET_BY_ID'
 const GET_DIETS = 'GET_DIETS'
 const POST_RECIPE = 'POST_RECIPE'
 const CLEAR_RECIPES = 'CLEAR_RECIPES'
-var baseUrl = 'http://localhost:3001'
+var baseUrl = 'https://pi-foods-cloa.onrender.com'
 
 export function getRecipes(name) {
     return async function (dispatch) {
@@ -24,7 +24,7 @@ export function getRecipes(name) {
 export function getRecipesById(id) {
     return async function (dispatch) {
         console.log('Enviando solicitud al servidor...');
-        const response = await axios.get(`http://localhost:3001/recipes/${id}`);
+        const response = await axios.get(`https://pi-foods-cloa.onrender.com/recipes/${id}`);
         console.log('Datos de respuesta recibidos:', response.data);
         return dispatch({
             type: GET_BY_ID,
@@ -36,7 +36,7 @@ export function getRecipesById(id) {
 
 export function getDiets() {
     return async function (dispatch) {
-        const response = await axios.get(`http://localhost:3001/diets`);
+        const response = await axios.get(`https://pi-foods-cloa.onrender.com/diets`);
         return dispatch({
             type: GET_DIETS,
             payload: response.data
@@ -46,7 +46,7 @@ export function getDiets() {
 }
 export function postRecipe(payload) {
     return async function (dispatch) {
-        const response = await axios.post(`http://localhost:3001/recipes`, payload)
+        const response = await axios.post(`https://pi-foods-cloa.onrender.com/recipes`, payload)
         dispatch({
             type: POST_RECIPE,
             payload: response.data
